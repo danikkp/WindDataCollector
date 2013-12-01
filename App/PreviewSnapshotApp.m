@@ -63,15 +63,19 @@ catch Mexc
     msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
 end
 
+
 %%%load settings file
+status='stopped';
+save('Settings','status','-append');
+
 try handles.Settings=load('Settings.mat');
-    if (exist(handles.Settings.SaveDir,'var'))
-    set(handles.SaveDir,'String',handles.Settings.SaveDir);
+    if (exist(handles.Settings.SaveDir))
+        set(handles.SaveDir,'String',handles.Settings.SaveDir);
     end
 catch Mexc
-    msgbox('Cant find settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created','Initializing problem','warn');
-    status='stopped'
-    save('Settings','status');
+    messageBox=msgbox(strcat('Cant find Settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created. ',...
+        'Matlab message: ', Mexc.message),'Initialization problem','warn');
+    uiwait(messageBox);    
     handles.Settings=load('Settings.mat');
 end
 
@@ -148,7 +152,7 @@ function BrowseBut_Callback(hObject, eventdata, handles)
 SaveDir=uigetdir('','Select folder to store measurements');
 
 if (SaveDir~=0)
-    save('Settings','SaveDir');
+    save('Settings','SaveDir','-append');
     set(handles.SaveDir,'String',SaveDir);
 end
 
@@ -176,14 +180,18 @@ Settings=load('Settings.mat');
 status=Settings.status;
 if (strcmp(status,'stopped'))
     status='running';
-    save('Settings','status');
+    save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
     %%%run the programm for recognition and collection of data
+    
 else
     if (strcmp(status,'running'))
         status='stopped';
-        save('Settings','status');
+        save('Settings','status','-append');
         set(handles.RunStopBut,'backgroundcolor','green','String','RUN');
+        
+        %%%%stop the programm run
+        
     end
 end
