@@ -65,8 +65,11 @@ end
 
 %%%load settings file
 try handles.Settings=load('Settings.mat');
+    if (exist(handles.Settings.SaveDir,'var'))
+    set(handles.SaveDir,'String',handles.Settings.SaveDir);
+    end
 catch Mexc
-    msgbox('Cant find settings file. Probably it has been deleted. Now a new copy will be created','Initializing problem','warn');
+    msgbox('Cant find settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created','Initializing problem','warn');
     status='stopped'
     save('Settings','status');
     handles.Settings=load('Settings.mat');
@@ -106,7 +109,7 @@ function SnapshotBut_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 snapshot=getsnapshot(handles.WebCamObj);
-%LastCaptureAxes=get(handles.LastCapture,);
+
 image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
 set(handles.LastCapture,'visible','off');
 figure(2);image(ycbcr2rgb(snapshot));
@@ -121,7 +124,7 @@ function SaveDir_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of SaveDir as text
 %        str2double(get(hObject,'String')) returns contents of SaveDir as a double
-set(handles.SaveDir,'String',Dire);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -144,8 +147,9 @@ function BrowseBut_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 SaveDir=uigetdir('','Select folder to store measurements');
 
-if (folderName~=0)
-    %save('Settings','SaveDir');
+if (SaveDir~=0)
+    save('Settings','SaveDir');
+    set(handles.SaveDir,'String',SaveDir);
 end
 
 
