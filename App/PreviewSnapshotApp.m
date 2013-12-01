@@ -66,7 +66,7 @@ end
 
 %%%load Settings file
 status='stopped';
-save('Settings','status','-append');
+guidata(src,status);
 
 try handles.Settings=load('Settings.mat');
     if (exist(handles.Settings.SaveDir))
@@ -76,7 +76,7 @@ catch Mexc
     messageBox=msgbox(strcat('Cant find Settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created. ',...
         'Matlab message: ', Mexc.message),'Initialization problem','warn');
     uiwait(messageBox);    
-    handles.Settings=load('Settings.mat');
+%%    handles.Settings=load('Settings.mat');
 end
 
 % Update handles structure
@@ -176,11 +176,14 @@ function RunStopBut_Callback(hObject, eventdata, handles)
 % hObject    handle to RunStopBut (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA
-Settings=load('Settings.mat');
-status=Settings.status;
+
+%%%%%%%%Settings=load('Settings.mat');
+status=guidata(src); %%Settings.status;
+
+
 if (strcmp(status,'stopped'))
     status='running';
-    save('Settings','status','-append');
+    guidata(src,status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
     %%%run the programm for recognition and collection of data
@@ -188,10 +191,10 @@ if (strcmp(status,'stopped'))
 else
     if (strcmp(status,'running'))
         status='stopped';
-        save('Settings','status','-append');
+        guidata(src,status); %%save('Settings','status','-append');
         set(handles.RunStopBut,'backgroundcolor','green','String','RUN');
         
         %%%%stop the programm run
-        
+        return;
     end
 end
