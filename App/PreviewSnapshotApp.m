@@ -64,7 +64,7 @@ catch Mexc
 end
 
 
-%%%load settings file
+%%%load Settings file
 status='stopped';
 save('Settings','status','-append');
 
