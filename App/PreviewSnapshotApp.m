@@ -56,17 +56,17 @@ function PreviewSnapshotApp_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 %%%get video cam
-try CamInfo=imaqhwinfo('winvideo');
-    SupFormat=CamInfo.DeviceInfo.SupportedFormats(end);
-    handles.WebCamObj=videoinput('winvideo',1,SupFormat{1});
-catch Mexc
-    msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
-end
+% try CamInfo=imaqhwinfo('winvideo');
+%     SupFormat=CamInfo.DeviceInfo.SupportedFormats(end);
+%     handles.WebCamObj=videoinput('winvideo',1,SupFormat{1});
+% catch Mexc
+%     msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
+% end
 
 
 %%%load Settings file
 status='stopped';
-guidata(src,status);
+set(handles.status,'String',status);
 
 try handles.Settings=load('Settings.mat');
     if (exist(handles.Settings.SaveDir))
@@ -75,8 +75,8 @@ try handles.Settings=load('Settings.mat');
 catch Mexc
     messageBox=msgbox(strcat('Cant find Settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created. ',...
         'Matlab message: ', Mexc.message),'Initialization problem','warn');
-    uiwait(messageBox);    
-%%    handles.Settings=load('Settings.mat');
+    uiwait(messageBox);
+    %%    handles.Settings=load('Settings.mat');
 end
 
 % Update handles structure
@@ -178,20 +178,26 @@ function RunStopBut_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA
 
 %%%%%%%%Settings=load('Settings.mat');
-status=guidata(src); %%Settings.status;
+status=get(handles.status,'String'); %%Settings.status;
 
 
 if (strcmp(status,'stopped'))
     status='running';
-    guidata(src,status); %%save('Settings','status','-append');
+    set(handles.status,'String',status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
-    %%%run the programm for recognition and collection of data
+    counter=1
+    while (strcmp(get(handles.status,'String'),'running'))
+        %%%run the programm for recognition and collection of data
+        set(handles.test,'String',int2str(counter));
+        pause(1);
+        counter=counter+1;
+    end
     
 else
     if (strcmp(status,'running'))
         status='stopped';
-        guidata(src,status); %%save('Settings','status','-append');
+        set(handles.status,'String',status); %%save('Settings','status','-append');
         set(handles.RunStopBut,'backgroundcolor','green','String','RUN');
         
         %%%%stop the programm run
