@@ -186,7 +186,7 @@ if (strcmp(status,'stopped'))
     set(handles.status,'String',status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
-    counter=1
+    counter=1;
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
         set(handles.test,'String',int2str(counter));
