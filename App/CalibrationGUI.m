@@ -63,7 +63,7 @@ try CamInfo=imaqhwinfo('winvideo');
     %%%%show preview by default
     vRes=handles.WebCamObj.VideoResolution;
     hImage = image(zeros(vRes(2),vRes(1), handles.WebCamObj.NumberOfBands),'Parent',handles.SnapshotPreviewAxes);
-    preview(handles.WebCamObj,hImage);
+    preview(handles.WebCamObj,hImage); axis(handles.SnapshotPreviewAxes,'image');
 catch Mexc
     msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
 end
@@ -92,10 +92,17 @@ function SnapshotBut_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+
 snapshot=getsnapshot(handles.WebCamObj);
 image(ycbcr2rgb(snapshot),'Parent',handles.SnapshotPreviewAxes);
+axis(handles.SnapshotPreviewAxes,'image');
 set(handles.SnapshotPreviewAxes,'visible','off');
 
+set(handles.rectAreaCoords,'String',num2str(zeros(1,4)));
+rectArea=getrect(handles.SnapshotPreviewAxes);
+set(handles.rectAreaCoords,'String',num2str(rectArea));
+
+set(handles.SaveRectBut,'Enable','on');
 
 
 % --- Executes on button press in SaveRectBut.
@@ -103,6 +110,10 @@ function SaveRectBut_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveRectBut (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+rectArea=str2num(get(handles.rectAreaCoords,'String'));
+save('Settings','rectArea','-append');
+close(CalibrationGUI);
 
 
 % --- Executes on button press in PreviewBut.
@@ -113,4 +124,4 @@ function PreviewBut_Callback(hObject, eventdata, handles)
 
 vRes=handles.WebCamObj.VideoResolution;
 hImage = image(zeros(vRes(2),vRes(1), handles.WebCamObj.NumberOfBands),'Parent',handles.SnapshotPreviewAxes);
-preview(handles.WebCamObj,hImage);
+preview(handles.WebCamObj,hImage); axis(handles.SnapshotPreviewAxes,'image');

@@ -114,9 +114,10 @@ function SnapshotBut_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 snapshot=getsnapshot(handles.WebCamObj);
 
-im=image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
+image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
+axis(handles.LastCapture,'image');
 set(handles.LastCapture,'visible','off');
-figure(2);image(ycbcr2rgb(snapshot)); 
+figure(2);image(ycbcr2rgb(snapshot));
 
 
 
@@ -186,14 +187,29 @@ if (strcmp(status,'stopped'))
     set(handles.status,'String',status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
-     %%%make all buttons and field unavailable to push
+    %%%make all buttons and field unavailable to push
+    set(handles.SaveDir,'Enable','off');
+    set(handles.BrowseBut,'Enable','off');
+    set(handles.CalibBut,'Enable','off');
+    %set(handles.,'Enable','off');
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+     load sunspot.dat %%%%used for example of data to plot
     counter=1;
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
         set(handles.test,'String',int2str(counter));
         pause(1);
         counter=counter+1;
+        
+        %%%%print output data on graphes and make screenshot and show it in
+        %%%%LastSnapshot axes
+        sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
+        oon=1:length(sunspot(:,1));
+        %subplot(2,1,1,'Parent',handles.LastPlots); 
+        %plot(oon,sunspotMod(:,2),'Parent',handles.LastPlots);
+        %subplot(2,1,2); 
+        rose(sunspotMod(:,2),16,'parent',handles.LastPlots);
     end
     
 else
