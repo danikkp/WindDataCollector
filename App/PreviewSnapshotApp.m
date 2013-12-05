@@ -55,13 +55,13 @@ function PreviewSnapshotApp_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for PreviewSnapshotApp
 handles.output = hObject;
 
-%%%get video cam
-% try CamInfo=imaqhwinfo('winvideo');
-%     SupFormat=CamInfo.DeviceInfo.SupportedFormats(end);
-%     handles.WebCamObj=videoinput('winvideo',1,SupFormat{1});
-% catch Mexc
-%     msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
-% end
+%%get video cam
+try CamInfo=imaqhwinfo('winvideo');
+    SupFormat=CamInfo.DeviceInfo.SupportedFormats(end);
+    handles.WebCamObj=videoinput('winvideo',1,SupFormat{1});
+catch Mexc
+    msgbox('Cant find video camera or connection is not supported','Camera connection failed', 'error');
+end
 
 
 %%%load Settings file
@@ -76,7 +76,7 @@ catch Mexc
     messageBox=msgbox(strcat('Cant find Settings file or some of its parameters. Probably it has been deleted. Now a new copy will be created. ',...
         'Matlab message: ', Mexc.message),'Initialization problem','warn');
     uiwait(messageBox);
-    %%    handles.Settings=load('Settings.mat');
+    %%%    handles.Settings=load('Settings.mat');
 end
 
 % Update handles structure
@@ -213,3 +213,5 @@ function CalibBut_Callback(hObject, eventdata, handles)
 % hObject    handle to CalibBut (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%%%open Calibration window
