@@ -114,9 +114,9 @@ function SnapshotBut_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 snapshot=getsnapshot(handles.WebCamObj);
 
-image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
+im=image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
 set(handles.LastCapture,'visible','off');
-figure(2);image(ycbcr2rgb(snapshot));
+figure(2);image(ycbcr2rgb(snapshot)); 
 
 
 
@@ -186,7 +186,7 @@ if (strcmp(status,'stopped'))
     set(handles.status,'String',status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
-     %%%make all buttons and field anavailavle to push
+     %%%make all buttons and field unavailable to push
     
     counter=1;
     while (strcmp(get(handles.status,'String'),'running'))
@@ -215,3 +215,6 @@ function CalibBut_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %%%open Calibration window
+CalibrationGUIInstance = CalibrationGUI();
+uiwait(CalibrationGUIInstance);
+
