@@ -22,7 +22,7 @@ function varargout = PreviewSnapshotApp(varargin)
 
 % Edit the above text to modify the response to help PreviewSnapshotApp
 
-% Last Modified by GUIDE v2.5 01-Dec-2013 17:04:07
+% Last Modified by GUIDE v2.5 05-Dec-2013 09:34:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -186,6 +186,8 @@ if (strcmp(status,'stopped'))
     set(handles.status,'String',status); %%save('Settings','status','-append');
     set(handles.RunStopBut,'backgroundcolor','red','String','STOP');
     
+     %%%make all buttons and field anavailavle to push
+    
     counter=1;
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
@@ -204,3 +206,10 @@ else
         return;
     end
 end
+
+
+% --- Executes on button press in CalibBut.
+function CalibBut_Callback(hObject, eventdata, handles)
+% hObject    handle to CalibBut (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
