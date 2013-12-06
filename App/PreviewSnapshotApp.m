@@ -219,6 +219,7 @@ else
         set(handles.RunStopBut,'backgroundcolor','green','String','RUN');
         
         %%%%stop the programm run
+    %%%stop the progr
         return;
     end
 end
