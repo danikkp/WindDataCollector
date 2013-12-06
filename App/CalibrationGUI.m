@@ -125,3 +125,4 @@ function PreviewBut_Callback(hObject, eventdata, handles)
 vRes=handles.WebCamObj.VideoResolution;
 hImage = image(zeros(vRes(2),vRes(1), handles.WebCamObj.NumberOfBands),'Parent',handles.SnapshotPreviewAxes);
 preview(handles.WebCamObj,hImage); axis(handles.SnapshotPreviewAxes,'image');
+%%%%
