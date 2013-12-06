@@ -194,7 +194,7 @@ if (strcmp(status,'stopped'))
     %set(handles.,'Enable','off');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-     load sunspot.dat %%%%used for example of data to plot
+    load sunspot.dat %%%%used for example of data to plot
     counter=1;
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
@@ -206,9 +206,9 @@ if (strcmp(status,'stopped'))
         %%%%LastSnapshot axes
         sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
         oon=1:length(sunspot(:,1));
-        %subplot(2,1,1,'Parent',handles.LastPlots); 
+        %subplot(2,1,1,'Parent',handles.LastPlots);
         %plot(oon,sunspotMod(:,2),'Parent',handles.LastPlots);
-        %subplot(2,1,2); 
+        %subplot(2,1,2);
         rose(sunspotMod(:,2),16,'parent',handles.LastPlots);
     end
     
@@ -219,7 +219,16 @@ else
         set(handles.RunStopBut,'backgroundcolor','green','String','RUN');
         
         %%%%stop the programm run
-    %%%stop the progr
+        
+        
+        %%%make all buttons and field available to push
+        set(handles.SaveDir,'Enable','on');
+        set(handles.BrowseBut,'Enable','on');
+        set(handles.CalibBut,'Enable','on');
+        %set(handles.,'Enable','off');
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        
         return;
     end
 end
