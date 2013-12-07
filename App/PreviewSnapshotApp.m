@@ -22,7 +22,7 @@ function varargout = PreviewSnapshotApp(varargin)
 
 % Edit the above text to modify the response to help PreviewSnapshotApp
 
-% Last Modified by GUIDE v2.5 05-Dec-2013 09:34:32
+% Last Modified by GUIDE v2.5 08-Dec-2013 00:49:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -209,7 +209,7 @@ if (strcmp(status,'stopped'))
         
         
         %%%%%%%%%%%show snaphot
-        snapshot=getsnapshot(handles.WebCamObj);        
+        snapshot=getsnapshot(handles.WebCamObj);
         image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
         axis(handles.LastCapture,'image');
         set(handles.LastCapture,'visible','off');
@@ -230,23 +230,25 @@ if (strcmp(status,'stopped'))
         %%%%%%choose the the plotting type according to pushed button
         if (strcmp(get(handles.plotType,'String'),'Overall'))
             subp=subplot(2,2,1,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2));%'parent',handles.LastPlots);% hold on;
-            xlim([oon(end-lag) oon(end)]);
-            subp=subplot(2,2,2,'Parent',handles.axesPanel); %subplot(2,2,2);
-            rose(subp,sunspotMod(:,2),16);%,'parent',ax);
-            subp=subplot(2,2,3:4,'Parent',handles.axesPanel); %subplot(2,2,3:4);
             plot(subp,oon,sunspotMod(:,2));
+            ylabel('Wind speed, m/s')
             xlim([oon(end-lag) oon(end)]);
+            subp=subplot(2,2,2,'Parent',handles.axesPanel);
+            rose(subp,sunspotMod(:,2),16);
+            title('Wind rose');
+            subp=subplot(2,2,3:4,'Parent',handles.axesPanel);
+            plot(subp,oon,sunspotMod(:,2));
+            xlim([oon(end-lag) oon(end)]); ylabel('Rotational speed, rps');
         end
         if (strcmp(get(handles.plotType,'String'),'Synchronized'))
-            subp=subplot(3,1,1,'Parent',handles.axesPanel); %subplot(3,1,1);%,'Parent',handles.LastPlots);
-            plot(subp,oon,sunspotMod(:,2));%,'parent',handles.LastPlots);% hold on;
-            xlim([oon(end-lag) oon(end)]);
+            subp=subplot(3,1,1,'Parent',handles.axesPanel);
+            plot(subp,oon,sunspotMod(:,2));ylabel('Wind speed, m/s')
+            xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
             subp=subplot(3,1,2,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2));%,'parent',ax);
-            xlim([oon(end-lag) oon(end)]);
+            plot(subp,oon,sunspotMod(:,2)); ylabel('Wind rose');
+            xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
             subp=subplot(3,1,3,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,1));
+            plot(subp,oon,sunspotMod(:,1)); ylabel('Rotational speed, rps');
             xlim([oon(end-lag) oon(end)]);
         end
         
@@ -286,3 +288,29 @@ function CalibBut_Callback(hObject, eventdata, handles)
 CalibrationGUIInstance = CalibrationGUI();
 uiwait(CalibrationGUIInstance);
 
+
+
+% --- Executes on selection change in popupmenu1.
+function popupmenu1_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu1
+contents = cellstr(get(hObject,'String'));
+set(handles.plotLagTime,'String',contents{get(hObject,'Value')});
+
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
