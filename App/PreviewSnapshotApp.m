@@ -196,20 +196,34 @@ if (strcmp(status,'stopped'))
     
     load sunspot.dat %%%%used for example of data to plot
     counter=1;
+    
+    lag=50;
+    len=length(sunspot(:,1));
+    sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
+    
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
+        
+        %%%%now runs test plots
         set(handles.test,'String',int2str(counter));
         pause(1);
         counter=counter+1;
         
         %%%%print output data on graphes and make screenshot and show it in
         %%%%LastSnapshot axes
-        sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
-        oon=1:length(sunspot(:,1));
-        %subplot(2,1,1,'Parent',handles.LastPlots);
-        %plot(oon,sunspotMod(:,2),'Parent',handles.LastPlots);
-        %subplot(2,1,2);
-        rose(sunspotMod(:,2),16,'parent',handles.LastPlots);
+        %sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
+        sunspotMod=[sunspotMod; rand(1,length(sunspot(1,:))).*sunspot(int8(len*rand(1)),end)];
+        oon=1:length(sunspotMod(:,1)); oon=oon';
+        %subplot(handles.LastPlots);
+        %figure(2);%'name','Last plots');
+        subplot(2,2,1,'Parent',handles.LastPlots);
+        plot(oon,sunspotMod(:,2),'parent',handles.LastPlots);% hold on;
+        xlim([oon(end-lag) oon(end)]);
+        subplot(2,2,2);
+        rose(sunspotMod(:,2),16);%,'parent',ax);
+        subplot(2,2,3:4);
+        plot(oon,sunspotMod(:,2));
+        xlim([oon(end-lag) oon(end)]);
     end
     
 else
