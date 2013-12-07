@@ -163,6 +163,7 @@ function OverallView_Callback(hObject, eventdata, handles)
 % hObject    handle to OverallView (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.plotType,'String','Overall');
 
 
 % --- Executes on button press in SyncView.
@@ -170,6 +171,7 @@ function SyncView_Callback(hObject, eventdata, handles)
 % hObject    handle to SyncView (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.plotType,'String','Synchronized');
 
 
 % --- Executes on button press in RunStopBut.
@@ -203,6 +205,14 @@ if (strcmp(status,'stopped'))
     
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
+        %%%%%output the numbers to store
+        
+        
+        %%%%%%%%%%%show snaphot
+        snapshot=getsnapshot(handles.WebCamObj);        
+        image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
+        axis(handles.LastCapture,'image');
+        set(handles.LastCapture,'visible','off');
         
         %%%%now runs test plots
         set(handles.test,'String',int2str(counter));
@@ -216,14 +226,32 @@ if (strcmp(status,'stopped'))
         oon=1:length(sunspotMod(:,1)); oon=oon';
         %subplot(handles.LastPlots);
         %figure(2);%'name','Last plots');
-        subplot(2,2,1,'Parent',handles.LastPlots);
-        plot(oon,sunspotMod(:,2),'parent',handles.LastPlots);% hold on;
-        xlim([oon(end-lag) oon(end)]);
-        subplot(2,2,2);
-        rose(sunspotMod(:,2),16);%,'parent',ax);
-        subplot(2,2,3:4);
-        plot(oon,sunspotMod(:,2));
-        xlim([oon(end-lag) oon(end)]);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%choose the the plotting type according to pushed button
+        if (strcmp(get(handles.plotType,'String'),'Overall'))
+            subp=subplot(2,2,1,'Parent',handles.axesPanel);
+            plot(subp,oon,sunspotMod(:,2));%'parent',handles.LastPlots);% hold on;
+            xlim([oon(end-lag) oon(end)]);
+            subp=subplot(2,2,2,'Parent',handles.axesPanel); %subplot(2,2,2);
+            rose(subp,sunspotMod(:,2),16);%,'parent',ax);
+            subp=subplot(2,2,3:4,'Parent',handles.axesPanel); %subplot(2,2,3:4);
+            plot(subp,oon,sunspotMod(:,2));
+            xlim([oon(end-lag) oon(end)]);
+        end
+        if (strcmp(get(handles.plotType,'String'),'Synchronized'))
+            subp=subplot(3,1,1,'Parent',handles.axesPanel); %subplot(3,1,1);%,'Parent',handles.LastPlots);
+            plot(subp,oon,sunspotMod(:,2));%,'parent',handles.LastPlots);% hold on;
+            xlim([oon(end-lag) oon(end)]);
+            subp=subplot(3,1,2,'Parent',handles.axesPanel);
+            plot(subp,oon,sunspotMod(:,2));%,'parent',ax);
+            xlim([oon(end-lag) oon(end)]);
+            subp=subplot(3,1,3,'Parent',handles.axesPanel);
+            plot(subp,oon,sunspotMod(:,1));
+            xlim([oon(end-lag) oon(end)]);
+        end
+        
+        %%%%save the data
+        
     end
     
 else
