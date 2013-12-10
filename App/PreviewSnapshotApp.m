@@ -196,64 +196,87 @@ if (strcmp(status,'stopped'))
     %set(handles.,'Enable','off');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    load sunspot.dat %%%%used for example of data to plot
-    counter=1;
+    %load sunspot.dat %%%%used for example of data to plot
+    %counter=1;
     
-    lag=50;
-    len=length(sunspot(:,1));
-    sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
+    %lag=50;
+    %len=length(sunspot(:,1));
+    %sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
     
+    timenow=now;
+    SaveDir=get(handles.SaveDir,'String');
     while (strcmp(get(handles.status,'String'),'running'))
         %%%run the programm for recognition and collection of data
         %%%%%output the numbers to store
         
+        %%%%%wait until time will come to next 10 seconds...
+        clo=clock;
+        while (mod(fix(clo(6)),10)>=0.0001)
+            clo=clock;
+        end
         
-        %%%%%%%%%%%show snaphot
+        if (now>=timenow)    
+        %%%%%%%%%%%make and show snaphot
+        clo=clock; %%%current date and time
         snapshot=getsnapshot(handles.WebCamObj);
         image(ycbcr2rgb(snapshot),'Parent',handles.LastCapture);
         axis(handles.LastCapture,'image');
         set(handles.LastCapture,'visible','off');
         
         %%%%now runs test plots
-        set(handles.test,'String',int2str(counter));
-        pause(1);
-        counter=counter+1;
+        %set(handles.test,'String',int2str(counter));
+        %pause(1);
+        %counter=counter+1;
         
         %%%%print output data on graphes and make screenshot and show it in
         %%%%LastSnapshot axes
         %sunspotMod=rand(length(sunspot(:,1)),length(sunspot(1,:))).*sunspot;
-        sunspotMod=[sunspotMod; rand(1,length(sunspot(1,:))).*sunspot(int8(len*rand(1)),end)];
-        oon=1:length(sunspotMod(:,1)); oon=oon';
+        %stepAddition=rand(1,length(sunspot(1,:))).*sunspot(int8(len*rand(1)),end);
+        %sunspotMod=[sunspotMod; stepAddition];
+        %oon=1:length(sunspotMod(:,1)); oon=oon';
         %subplot(handles.LastPlots);
         %figure(2);%'name','Last plots');
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%choose the the plotting type according to pushed button
-        if (strcmp(get(handles.plotType,'String'),'Overall'))
-            subp=subplot(2,2,1,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2));
-            ylabel('Wind speed, m/s')
-            xlim([oon(end-lag) oon(end)]);
-            subp=subplot(2,2,2,'Parent',handles.axesPanel);
-            rose(subp,sunspotMod(:,2),16);
-            title('Wind rose');
-            subp=subplot(2,2,3:4,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2));
-            xlim([oon(end-lag) oon(end)]); ylabel('Rotational speed, rps');
-        end
-        if (strcmp(get(handles.plotType,'String'),'Synchronized'))
-            subp=subplot(3,1,1,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2));ylabel('Wind speed, m/s')
-            xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
-            subp=subplot(3,1,2,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,2)); ylabel('Wind rose');
-            xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
-            subp=subplot(3,1,3,'Parent',handles.axesPanel);
-            plot(subp,oon,sunspotMod(:,1)); ylabel('Rotational speed, rps');
-            xlim([oon(end-lag) oon(end)]);
-        end
+%         if (strcmp(get(handles.plotType,'String'),'Overall'))
+%             subp=subplot(2,2,1,'Parent',handles.axesPanel);
+%             plot(subp,oon,sunspotMod(:,2));
+%             ylabel('Wind speed, m/s')
+%             xlim([oon(end-lag) oon(end)]);
+%             subp=subplot(2,2,2,'Parent',handles.axesPanel);
+%             rose(subp,sunspotMod(:,2),16);%
+%             title('Wind rose');
+%             hold on;
+%             c=compass(30*cosd(stepAddition(:,2)),30*sin(stepAddition(:,2)),'r');
+%             set(c,'LineWidth',3);
+%             hold off;
+%             subp=subplot(2,2,3:4,'Parent',handles.axesPanel);
+%             plot(subp,oon,sunspotMod(:,2));
+%             xlim([oon(end-lag) oon(end)]); ylabel('Rotational speed, rps');
+%         end
+%         if (strcmp(get(handles.plotType,'String'),'Synchronized'))
+%             subp=subplot(3,1,1,'Parent',handles.axesPanel);
+%             plot(subp,oon,sunspotMod(:,2));ylabel('Wind speed, m/s')
+%             xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
+%             subp=subplot(3,1,2,'Parent',handles.axesPanel);
+%             plot(subp,oon,sunspotMod(:,2)); ylabel('Wind rose');
+%             xlim([oon(end-lag) oon(end)]); set(gca,'XTickLabel',[]);
+%             subp=subplot(3,1,3,'Parent',handles.axesPanel);
+%             plot(subp,oon,sunspotMod(:,1)); ylabel('Rotational speed, rps');
+%             xlim([oon(end-lag) oon(end)]);
+%         end
         
-        %%%%save the data
+        %%%%save the data  SaveDir,'\
+        snapshotSaveDir=strcat('snapshots\',num2str(clo(3)),'_',num2str(clo(2)),'_',...
+            num2str(clo(1)),'_',num2str(clo(4)),'_',num2str(clo(5)),'_',num2str(fix(clo(6))),'.jpg');
+        imwrite(ycbcr2rgb(snapshot),snapshotSaveDir,'jpg');
+        %%%save snapshot each 10 seconds
+        timenow=timenow+10/(24*3600);
         
+        set(handles.CaptureTime,'String',strcat(num2str(clo(3)),'/',num2str(clo(2)),'/',...
+            num2str(clo(1)),' ',num2str(clo(4)),':',num2str(clo(5)),':',num2str(fix(clo(6)))));
+        end
     end
     
 else
